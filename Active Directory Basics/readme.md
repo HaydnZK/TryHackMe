@@ -1,6 +1,6 @@
-## Managing Users and Delegating Control
+# Managing Users and Delegating Control
 
-# Task 1: Removing an Unnecessary OU
+## Task 1: Removing an Unnecessary OU
 
 To start, I needed to clean up an unwanted organizational unit in Active Directory. I compared the list of THM OUs with the organizational chart and noticed that the Research and Development OU wasn’t supposed to be there.
 
@@ -14,11 +14,11 @@ Under the Object tab, I unchecked "Protect object from accidental deletion."
 
 After that, I was able to delete the OU.
 
-# Task 2: Logging into Sophie's Desktop
+## Task 2: Logging into Sophie's Desktop
 
 I needed to RDP into Sophie’s account to retrieve a flag from her desktop. To do this, I had to give Phillip permission to reset her password.
 
-# Delegating Control
+## Delegating Control
 
 In Active Directory, I right-clicked the Sales OU and selected Delegate Control.
 
@@ -26,11 +26,11 @@ I added Phillip using the Check Names button to confirm the account.
 
 I granted him permission to reset user passwords and force password changes at next login.
 
-# Getting the Computer Name
+## Getting the Computer Name
 
 Before connecting via RDP, I used the following command in PowerShell to find the NetBIOS name: hostname
 
-# Resetting Sophie's Password
+## Resetting Sophie's Password
 
 Once logged in as Phillip via RDP, I opened PowerShell and ran:
 
@@ -62,7 +62,7 @@ After that, I opened RDP again and logged in using Sophie’s account and the ne
 
 Once logged in, I was able to access her desktop and retrieve the flag file.
 
-## Organizing Devices in Active Directory
+# Organizing Devices in Active Directory
 
 We noticed that the default Computers OU in Active Directory contained a mix of laptops, desktops, and servers. To improve organization and 
 reflect a more logical structure, we created two new Organizational Units:
@@ -97,13 +97,8 @@ Default Domain Controllers Policy was linked to the Domain Controllers OU.
 
 In the Settings tab of the Default Domain Policy, we saw that it only applies to Computer Configuration, though GPOs can include both user and computer settings. The Security Filtering was set to Authenticated Users, which means it applies broadly across the domain.
 
-Expanding Computer Configuration > Policies > Windows Settings > Security Settings revealed various default configurations, including:
-
-Password requirements
-
-Account lockout rules
-
-Encryption policies
+Expanding Computer Configuration > Policies > Windows Settings > Security Settings revealed various default configurations, 
+including password requirements, account lockout rules, encryption policies, and more.
 
 Editing Default Password Requirements
 To change the Minimum Password Length from 7 to 10 characters:
@@ -166,7 +161,7 @@ Password protect the screen saver
 
 Link the GPO to the root of the domain so it applies to all computers
 
-## Authentication Methods
+# Authentication Methods
 Within Windows, all credentials are stored in the Domain Controllers. In order to authenticate using domain credentials, the Domain Controller must verify 
 if the credentials are correct. This is done using one of two protocols:
 
@@ -174,7 +169,7 @@ Kerberos: Used by recent versions of Windows and is the default protocol in mode
 
 NetNTLM: The legacy version, still kept for compatibility.
 
-# Kerberos Authentication Steps
+## Kerberos Authentication Steps
 The user sends their username and a timestamp encrypted with a key derived from their password to the KDC (Key Distribution Center), which is usually hosted 
 on the Domain Controller. The KDC is responsible for issuing Kerberos tickets.
 
@@ -193,7 +188,7 @@ The KDC sends back a TGS and a Service Session Key. The TGS is encrypted with a 
 
 The user then sends the TGS to the desired service. The service decrypts the ticket using its password hash, validates the Service Session Key, and grants access.
 
-# NetNTLM Authentication Steps
+## NetNTLM Authentication Steps
 The client sends an authentication request to the server they wish to access.
 
 The server generates a random number and sends it to the client as a challenge.
@@ -206,10 +201,10 @@ The Domain Controller uses the challenge to recalculate the expected response an
 
 The server then sends the authentication result back to the client.
 
-## Trees, Forests, and Trusts
+# Trees, Forests, and Trusts
 A single domain is suitable for smaller networks, but as an organization grows, it may need to scale to include multiple domains.
 
-# Trees
+## Trees
 When a company expands to other regions (like new countries), different policies and legal requirements might apply. New IT teams in those regions need the ability to manage their local resources without interfering with others.
 
 Active Directory supports this through multiple domains. When these domains share the same namespace (e.g., thm.local), they can be joined into a tree.
@@ -224,7 +219,7 @@ Each domain manages its own users, computers, and GPOs. IT in the UK controls it
 
 An additional group, Enterprise Admins, is introduced at this level. Members of this group have administrative rights over all domains in the enterprise. Each domain still maintains its own Domain Admins group for local control.
 
-# Forests
+## Forests
 When different domain trees exist under separate namespaces (e.g., thm.local and mht.local), they form a forest. This may happen when a company acquires another organization with its own IT infrastructure.
 
 In this example:
@@ -235,7 +230,7 @@ Tree 2: mht.local
 
 These trees form a forest, which allows for management across the larger organization, while keeping trees logically separated.
 
-# Trust Relationships
+## Trust Relationships
 Trusts allow users in one domain to access resources in another. Trusts can be:
 
 One-way: If Domain A trusts Domain B, users from Domain B can access Domain A's resources, but not the other way around.
