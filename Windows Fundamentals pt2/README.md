@@ -139,6 +139,6 @@ Port configurations
 
 Editing the registry can break systems if done improperly, so caution is always recommended.
 
-Summary
+## Summary
 This session focused on powerful tools within Windows that support monitoring, diagnosing, and configuring the system. Whether it’s viewing 
 hardware info through msinfo32, managing services in compmgmt.msc, or digging into performance issues with resmon, these utilities form the core of effective Windows administration.
