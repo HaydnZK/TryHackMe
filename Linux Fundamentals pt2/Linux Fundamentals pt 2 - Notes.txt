@@ -1,0 +1,66 @@
+Linux Fundamentals pt 2 - Notes
+
+Accessing Your Linux Machine Using SSH (Deploy):
+
+SSH (Secure Shell) is a protocol between devices in an encrypted form. By using cryptography, we send in a human-readable format, which gets encrypted while it's traveling over a network. Once it reaches the remote machine it is then unencrypted. There's more to SSH than what we learn in this room, however, for now we learned two main things; SSH is for remote command execution and data sent between the devices is encrypted.
+
+For this lesson, it had us start out by testing out using ssh to get into a machine by having us load up the attackbox as well as the rooms machine. We wanted to log in as "tryhackme" on this remote machine, so we used the command
+
+ssh tryhackme@<MACHINE_IP> 
+
+When doing this, we first get prompted to see if we trust the host and then for a password for the account we're trying to remotely access. Once we provide the password, we're in the terminal of the remotely accessed machine. 
+
+-
+
+Introduction to Flags and Switches:
+
+Most commands allow for an argument to be provided, these are usually identified by a hyphen and a keyword, known as a flag or switch. If you don't add any flags or switches, the command will just run its default behavior. For example, using ls lists the contents of the working directory. It's worth noting, with the basic command, it won't show hidden files, however, we can use additions to help show those files. 
+
+In the example provided, using ls only showed one file: folder1. When doing ls -a we discover there's actually another file: .hiddenfolder 
+
+When using a command, if you're unsure of the different flags and switches, there are several ways to see all of the potential options. You can use --help to see all of the possible options that the command accepts, as well as a brief description. You can also use the manual page by starting the command with man; in this case man ls would be the command. Man provides all of the documentation on the command you're inquiring about.
+
+-
+
+Filesystem Interaction Continued:
+
+Now that we've learned about some of the most fundamental commands that deal with filesystem interactions on a Linux machine, we learned how to manipulate some of these using various commands. We got to practice a couple of these in the machines directory within the THM room
+
+* touch: Creates a file. For the touch command, there's only one argument that can be named, the name we want to give the created file. Using touch simply creates a blank file.
+touch note
+* mkdir: Creates a folder. This works the same as touch and can create an empty folder.
+mkdir mydirectory
+* cp: Copy a file or folder. This command takes two arguments, the first being the file you want to copy and the second being the name of the new file you wish to create. This will copy the entirety of the contents of the file and create a replica. 
+cp note note2
+* mv: Move a file or folder. Similar to cp but a bit different, this one also takes two arguments. Rather than copying and/or creating a new file, mv merges or modifies the second file that we provide as an argument. You can use mv to move a file to a new folder, but you can also use it to rename a file or folder. In the second example for this, we do just that, we chose to move the contents of note2 to a new file called note3. 
+mv myfile myfolder
+mv note2 note 3
+* rm: Remove a file or folder. It's important to note that when using the rm command, you must add an -R before the directory name you wish to delete.
+rm note
+rm -R mydirectory
+* file: Determine the type of a file. This can help to take some of the guess work as to what a file is and what the purpose or contents might be. This will tell us the extension of a file that we name in the argument (such as if it's a .txt) 
+file note
+
+-
+
+Permissions 101:
+
+We know that different files generally have different permissions, which can be read, write, or execute. When using a command like ls -l we end up seeing a number of files that have a portion that might look like "-rw-r--r--" which shows the permissions for each person who might interact with it.
+
+With Linux, while a user may technically own a file, if proper permissions have been set, a group of users can also have the same or a different set of permissions without affecting the owner. 
+
+A real world example would be the system user that runs a web server must have permissions to read and write files for an effective web application. However, companies, such as ones web hosting ones, will want to have allow their customers to upload their own files to the website without being the webserver system user. 
+
+So, now we cover switching user, which we use the su command for. Any user who isn't the root user must know the user they want to switch to as well as the user's password. There's several switches that can be used with the su command, though we only covered the -l or --login switch. By providing the -l switch to su, we start a shell that's similar to the actual user logging in; we inherit a lot more properties of the new user (environment variables and things like that). When we use just su to switch, the session drops us into the previous user's home directory. When we add -l to the command, we get dropped into the home directory of the user automatically.
+
+-
+
+Common Directories: 
+
+/etc: Short for etcetera, this is one of the most important root directories in your system. This is a commonplace location to store system files used by the OS. In the example we saw, the ls command showed sudoers, as a file among several others, which contains a list of the users and groups that have permission to run sudo or set commands as the root user. 
+
+/var: Short for variable, this is one of the main root folders found on a Linux system. Data that is frequently accessed or witten by services or applications running on the system are generally stored here. in /var/log we'll find log files written from running services and applications, or potentially data that's not associated with a specific user (databases, etc)
+
+/root: Unlike home, the root is the home for the root user. There isn't anything more to this, but it's important to understand that this is the home directory for the root user. It's worth noting that it's safe to assume the user would have their data in a directory like /home/root by default.
+
+/tmp: Short for temporary, this is a unique root directory found in a Linux install. This directory is volatile and is only used to store data that is needed once or twice. It's similar to how memory works on a computer, once the computer is restarted, the contents of this folder are emptied. For pentesters, it's useful that any use can write to this folder by default, meaning that once we have access to a machine, it's a good place to store things such as enumeration scripts. 
